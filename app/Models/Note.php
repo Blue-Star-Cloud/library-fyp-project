@@ -13,13 +13,9 @@ class Note extends Model
         'reading_ability_progress',
         'vipers_progress',
         'class_objectives',
-        'student_id',
+        'student_id'
     ];
 
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
 
     public function student()
     {

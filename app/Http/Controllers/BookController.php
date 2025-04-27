@@ -30,7 +30,6 @@ class BookController extends Controller
      */
     public function index()
     {
-        // $data = Book::all();
         $data = Book::withCount('review') // Get total reviews per book
         ->withAvg('review', 'rating') // Get average rating per book
         ->get();
@@ -40,8 +39,6 @@ class BookController extends Controller
     public function assignedBook()
     {
         $data = Book::with('review')->where('id', Auth::user()->book_id)->get();
-        //dd(Auth::user());
-        //dd($data);
         $totalReviews = Review::where('book_id', Auth::user()->book_id)->count();
         $avgRating = Review::where('book_id', Auth::user()->book_id)->avg('rating');
         $canReview = !Review::where('book_id', Auth::user()->book_id)
@@ -72,15 +69,24 @@ class BookController extends Controller
      * Store a newly created resource in storage.
      */
     public function bookstore(Request $request)
-    {
-        //dd(vars: $request);
+    {   
+        $request->validate([
+            'publisher' => ['required'],
+            'author' => ['required'],
+            'title' => ['required'],
+            'category' => ['required'],
+            'description' => ['required'],
+            'content' => ['required'],
+            'or_level' => ['required'],
+            'image' => ['required']
+        ]);
         $book = new Book();
         $book->publisher = $request->publisher;
         $book->author = $request->author;
         $book->title = $request->title;
-        //$book->genre = $request->genre;
         $book->category = $request->category;
         $book->description = $request->description;
+        $book->content = $request->content;
         $book->or_level = $request->or_level;
         if ($request->hasFile('image')){
             $imagename = $request->file('image');
@@ -122,17 +128,15 @@ class BookController extends Controller
         ]);
         $id = $request->id;
         $book = Book::find(id: $id);
-        $book->update($request->all());
+        $book->update($request->except('image'));
+        if ($request->hasFile('image')) {
+            $imagename = $request->file('image');
+            $filename = time() . '.' . $imagename->getClientOriginalExtension();
+            $path = $imagename->move(public_path('/assets/book-images/'), $filename);
+            $book->image = $filename;
+            $book->save(); 
+        }
         $book->genres()->sync($request->genre);
-        // dd($request->all());
-
-        //dd($note);
-        //$note->update($request->all());
-        //$book->update($request->only('title', 'content'));
-        //$note->update($request->all()->except(['title', 'content']));
-        //$note->update($request->title);
-        //$note->update($request->all());
-        //User::where($id)->update($request->User);
         return redirect()->route('books');
     }
 
@@ -142,8 +146,6 @@ class BookController extends Controller
 
     public function deletebook($id)
     {
-        //$book = Book::find($id);
-        //$book->delete();
         Book::destroy($id);
         return redirect()->route('books');
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use App\Models\user;
 use Illuminate\Http\Request;
+use App\Models\Assignment;
+use App\Models\ClassNote;
 
 class NoteController extends Controller
 {
@@ -29,7 +31,7 @@ class NoteController extends Controller
 
     public function viewstudentnotes($id)
     {
-        $data = Note::all(); //change query with id
+        $data = Note::all();
         return view( 'note.list',['noteslist'=>$data,'selectedid'=>$id]);
     }
 
@@ -48,6 +50,13 @@ class NoteController extends Controller
     public function notestore(Request $request)
     {
         //dd(vars: $request);
+        $request->validate([
+            'title' => ['required'],
+            'objectives_comments' => ['required'],
+            'reading_ability_progress' => ['required'],
+            'vipers_progress' => ['required'],
+            'class_objectives' => ['required']
+        ]);
         $note = new Note();
         $note->title = $request->title;
         $note->date = $request->date;
@@ -57,8 +66,10 @@ class NoteController extends Controller
         $note->class_objectives = $request->class_objectives;
         $note->teacher_id = $request->teacher_id;
         $note->student_id = $request->student_id;
+        $note->class_notes_id = $request->note_id;
+        $note->assignment_id = $request->assignment_id;
+        $note->student_class_id = $request->class_id;
         $note->save();
-        //$note->user()->attach($request->id);
         return redirect()->route('notes');
     }
 
@@ -89,14 +100,7 @@ class NoteController extends Controller
         ]);
         $id = $request->id;
         $note = Note::find(id: $id);
-        //$note->update($request->all());
-        //dd($note);
-        //$note->update($request->all());
         $note->update($request->only('title', 'content'));
-        //$note->update($request->all()->except(['title', 'content']));
-        //$note->update($request->title);
-        //$note->update($request->all());
-        //User::where($id)->update($request->User);
         return redirect()->route('notes');
     }
 
@@ -107,5 +111,26 @@ class NoteController extends Controller
     {
         Note::destroy($id);
         return redirect()->route('notes');
+    }
+
+    public function getNotes($classId)
+    {
+        $notes = ClassNote::where('form_class_id', $classId)->get();
+        return response()->json($notes);
+    }
+    public function getAssignments($studentId)
+    {
+        $assignments = Assignment::where('student_id', $studentId)->get();
+        return response()->json($assignments);
+    }
+    public function getNoteDetails($noteId)
+    {
+        $note = ClassNote::find($noteId);
+        return response()->json($note);
+    }
+    public function getAssignmentDetails($assignmentId)
+    {
+        $assignment = Assignment::find($assignmentId);
+        return response()->json($assignment);
     }
 }

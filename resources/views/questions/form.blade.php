@@ -56,44 +56,41 @@
 											<div class="row">
 												<!--begin::Col-->
 												<div class="col-md-6 fv-row mb-5">
-													<label class="form-label">Type</label>
-													<input name="question_type" id="inputQuestionType" value="{{$question->question_type ?? ''}}" type="text" class="form-control form-control-solid">
+													<label class="form-label">Question Type</label>
+													<select name="question_type" id="inputQuestionType" class="form-select form-select-solid" required>
+														<option disabled {{ empty($question) ? 'selected' : '' }}>Select Question</option>
+														<option value="Vocabulary" {{ !empty($question) && $question['question_type'] == 'Vocabulary' ? 'selected' : '' }}>Vocabulary</option>
+														<option value="Inference" {{ !empty($question) && $question['question_type'] == 'Inference' ? 'selected' : '' }}>Inference</option>
+														<option value="Prediction" {{ !empty($question) && $question['question_type'] == 'Prediction' ? 'selected' : '' }}>Prediction</option>
+														<option value="Explanation" {{ !empty($question) && $question['question_type'] == 'Explanation' ? 'selected' : '' }}>Explanation</option>
+														<option value="Retrieval" {{ !empty($question) && $question['question_type'] == 'Retrieval' ? 'selected' : '' }}>Retrieval</option>
+														<option value="Summary" {{ !empty($question) && $question['question_type'] == 'Summary' ? 'selected' : '' }}>Summary</option>
+													</select>
+													@error('question_type')
+														<span class="invalid-feedback" role="alert">
+															<strong>{{ $message }}</strong>
+														</span>
+													@enderror
 												</div>
 												<!--end::Col-->
 												<!--begin::Col-->
-												<!--<div class="col-md-6 fv-row mb-5">
-													<label class="form-label">Assign To</label>
-													@if (empty($question))
-													<select hidden name="student_id"class="form-select form-select-solid">
-														<option value="1" selected="selected">Student Name</option>
-														@foreach($userslist as $user)
-														@if($user->role =='student')
-														<option value="{{$student_id = $user->id}}">{{ $user->name }}</option>
-														@endif
-														@endforeach
-													</select>
-													@else
-													<select name="student_id"class="form-select form-select-solid">
-														<option value="{{$student_id = $question->id}}" selected="selected">Student ID</option>
-													</select>
-													@endif
-												</div>-->
-												<!--end::Col-->
-												<!--begin::Col-->
 												<div class="col-md-6 fv-row mb-5">
-													<label class="form-label">Book:</label>
-													@if (empty($question))
-													<select name="book_id"class="form-select form-select-solid">
-														<option value="1" selected="selected">Book Name</option>
-														@foreach($bookslist as $book)
-														<option value="{{$book_id = $book->id}}">{{ $book->title }}</option>
-														@endforeach
+													<label class="form-label">Book</label>
+													<select name="book_id" class="form-select form-select-solid" required>
+														@if (!empty($question))
+															<option value="{{ $question->book->id }}" selected="selected">{{ $question->book->title }}</option>
+														@else
+															<option value="" disabled selected>Select Book</option>
+															@foreach ($bookslist as $book)
+																<option value="{{ $book->id }}">{{ $book->title }}</option>
+															@endforeach
+														@endif
 													</select>
-													@else
-													<select name="book_id"class="form-select form-select-solid">
-														<option value="{{$book_id = $question->book->id}}" selected="selected">{{ $question->book->title }}</option>
-													</select>
-													@endif
+													@error('book_id')
+														<span class="invalid-feedback" role="alert">
+															<strong>{{ $message }}</strong>
+														</span>
+													@enderror
 												</div>
 												<!--end::Col-->
 												<!--begin::Col-->
@@ -102,7 +99,12 @@
 											</div>
 											<div class="mb-0 mt-1">
 												<label class="form-label">Question Text</label>
-												<textarea name="question_text" id="inputQuestionText" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7" rows="6" name="message">{{$question->question_text ?? ''}}</textarea>
+												<textarea name="question_text" id="inputQuestionText" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7" rows="6" required name="message">{{$question->question_text ?? ''}}</textarea>
+												@error('question_text')
+														<span class="invalid-feedback" role="alert">
+															<strong>{{ $message }}</strong>
+														</span>
+												@enderror
 												<!--begin::Submit-->
 												<button type="submit" class="btn btn-primary float-end mt-5">Submit</button>
 												<!--end::Submit-->

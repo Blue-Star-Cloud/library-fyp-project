@@ -71,9 +71,12 @@
 
 														<select  name="teacher_id"class="form-select form-select-solid">
 															<option disabled >{{$formclass->teacher_name ?? 'Select a teacher' }}</option>
-															@foreach($teacherslist as $teacher)
-															<option value="{{$teacher['id']}}">{{ $teacher['name'] }}</option>
-															@endforeach
+															@foreach ($teacherslist as $teacher)
+															<option value="{{ $teacher['id'] }}" 
+																@if (isset($formclass) && $formclass->teacher_id == $teacher['id']) selected @endif>
+																{{ $teacher['name'] }}
+															</option>
+														@endforeach
 														</select>
 														
 

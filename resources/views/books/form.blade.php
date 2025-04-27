@@ -107,7 +107,7 @@
                                             <div class="col-md-6 fv-row mb-5">
                                                 <label class="form-label">Genre</label>
                                                 <select name="genre[]" class="form-select form-select-solid"
-                                                    data-control="select2" multiple size="4">
+                                                    data-control="select2" multiple size="4" required>
                                                     <option value="1" disabled>Select Genre</option>
                                                     @foreach ($genrelist as $genre)
                                                         <option value="{{ $genre->id }}"
@@ -121,9 +121,11 @@
                                             <!--begin::Col-->
                                             <div class="col-md-6 fv-row mb-5">
                                                 <label class="form-label">Category</label>
-                                                <input type="text" name="category" value="{{ $book->category ?? '' }}"
-                                                    id="inputCategory"
-                                                    class="form-control form-control-solid @error('category') is-invalid @enderror">
+                                                <select name="category" id="inputQuestionType" class="form-select form-select-solid" required>
+                                                    <option disabled {{ empty($book) ? 'selected' : '' }}>Select Category</option>
+                                                    <option value="Fiction" {{ !empty($book) && $book['category'] == 'Fiction' ? 'selected' : '' }}>Fiction</option>
+                                                    <option value="Non-Fiction" {{ !empty($book) && $book['category'] == 'Non-Fiction' ? 'selected' : '' }}>Non-Fiction</option>
+                                                </select>
                                                 @error('category')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -148,19 +150,33 @@
                                             <!--begin::Col-->
                                             <div class="col-md-6 fv-row mb-5">
                                                 <label class="form-label">OR Level</label>
-                                                <input type="text" name="or_level" value="{{ $book->or_level ?? '' }}"
-                                                    id="inputOrLevel"
-                                                    class="form-control form-control-solid @error('or_level') is-invalid @enderror">
-                                                @error('or_level')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
+                                                <select name="or_level" id="inputOrLevel"
+														class="form-select form-select-solid @error('or_level') is-invalid @enderror"
+														required
+														oninvalid="this.setCustomValidity('Please select an OR level')"
+														oninput="this.setCustomValidity('')">
+
+														<option value="" disabled {{ empty($book->or_level) ? 'selected' : '' }}>
+															Select OR Level
+														</option>
+
+														@for ($i = 1; $i <= 20; $i++)
+															<option value="{{ $i }}"
+																{{ (isset($book->or_level) && $book->or_level == $i) ? 'selected' : '' }}>
+																{{ $i }}
+															</option>
+														@endfor
+													</select>
+													@error('or_level')
+														<span class="invalid-feedback" role="alert">
+															<strong>{{ $message }}</strong>
+														</span>
+													@enderror
                                             </div>
                                             <div class="col-md-12 fv-row mb-5">
                                                 <label class="form-label">Content</label>
-                                                <textarea type="text" rows=6 name="content" value="{{ $book->content ?? '' }}" id="inputContent"
-                                                    class="form-control form-control-solid @error('content') is-invalid @enderror"></textarea>
+                                                <textarea rows="6" name="content" required id="inputContent"
+                                                    class="form-control form-control-solid @error('content') is-invalid @enderror">{{ $book->content ?? '' }}</textarea>
                                                 @error('content')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -170,7 +186,12 @@
                                             <div class="col-md-12 fv-row mb-5">
                                                 <label class="form-label">Image</label>
                                                 <input name="image" type="file" name="image"
-                                                    class="form-control form-control-solid">
+                                                    class="form-control form-control-solid" required>
+                                                    @error('image')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </div>
                                             <!--end::Col-->
                                             <div class="mb-0 mt-1">

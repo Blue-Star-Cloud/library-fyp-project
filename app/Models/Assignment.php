@@ -25,8 +25,6 @@ class Assignment extends Model
     {
         return $this->belongsTo(User::class, 'student_id');
     }
-
-    // Define the teacher relationship
     public function teacher()
     {
         return $this->belongsTo(User::class, 'teacher_id');

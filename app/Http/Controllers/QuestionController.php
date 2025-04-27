@@ -22,7 +22,6 @@ class QuestionController extends Controller
     public function viewquestions()
     {
         $data = Question::with('Book')->get();
-        //dd($data);
         return view('questions.list',['questionslist'=>$data]);
     }    
     
@@ -36,20 +35,23 @@ class QuestionController extends Controller
     {
         $books = Book::all();
         $users = User::all();
-        //return view('students.list',['userslist'=>$data]);
         return view('questions.form',['bookslist'=>$books, 'userslist'=>$users]);
     }
 
     public function questionstore(Request $request)
     {
         //dd(vars: $request);
+        $request->validate([
+            'question_text' => ['required'],
+            'question_type' => ['required'],
+            'book_id' => ['required'],
+        ]);
         $question = new Question();
         $question->question_text = $request->question_text;
         $question->question_type = $request->question_type;
         $question->book_id = $request->book_id;
         $question->teacher_id = $request->teacher_id;
         $question->save();
-        //$note->user()->attach($request->id);
         return redirect()->route('questions');
     }
 

@@ -59,7 +59,7 @@
 												<div class="col-md-6 fv-row mb-5">
 													<label class="form-label">Book:</label>
 													<select name="book_id"class="form-select form-select-solid">
-														<option value="{{ isset($review) ? $review->book_id :$student->book->id}}" selected="selected">{{ isset($review) ? $review->book->title :$student->book->title}}</option>
+														<option value="{{ isset($review) ? $review->book_id :$student->book->id}}" required selected="selected">{{ isset($review) ? $review->book->title :$student->book->title}}</option>
 														@if (empty($review))
 														@foreach($bookslist as $book)
 														<option value="{{$book_id = $book->id}}">{{ $book->title }}</option>
@@ -71,7 +71,7 @@
 												<!--begin::Col-->
 												<div class="col-md-6 fv-row mb-5">
 													<label class="form-label">Rating</label>
-													<select name="rating" id="inputRating"
+													<select name="rating" required id="inputRating"
 														class="form-select form-select-solid @error('rating') is-invalid @enderror"
 														required
 														oninvalid="this.setCustomValidity('Please select a rating')"
@@ -97,7 +97,7 @@
 												<!--end::Col-->
 												<div class="mb-0 mt-1">
 													<label class="form-label">Comment</label>
-													<textarea name="comment_text" id="inputCommentText" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7" rows="6" name="message">{{$review->comment_text ?? ''}}</textarea>
+													<textarea name="comment_text" required id="inputCommentText" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7" rows="6" name="message">{{$review->comment_text ?? ''}}</textarea>
 													<!--begin::Submit-->
 													<button type="submit" class="btn btn-primary float-end mt-5">Submit</button>
 													<!--end::Submit-->

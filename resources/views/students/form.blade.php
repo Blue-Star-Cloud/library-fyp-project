@@ -85,7 +85,9 @@
 													@error('password')
 													<span class="invalid-feedback" role="alert">
 														<strong>{{ $message }}</strong>
-														<span>The password must have one uppercase letter, one number, a special case character and must be minimum 8 letters length</span>
+													</span>
+													<span class="invalid-feedback" role="alert">
+														The password must have one uppercase letter, one number, a special case character and must be minimum 8 letters length
 													</span>
 													@enderror
 												</div>
@@ -118,29 +120,6 @@
 												</div>
 												<!--end::Col-->
 												<!--begin::Col-->
-												{{-- <div class="col-md-6 fv-row mb-5">
-													<label class="form-label">Current Book Name</label>
-													<input type="text" name="current_book_name" value="{{$user->current_book_name ?? ''}}" id="inputCurrentBookName" class="form-control form-control-solid @error('current_book_name') is-invalid @enderror">
-													@error('current_book_name')
-													<span class="invalid-feedback" role="alert">
-														<strong>{{ $message }}</strong>
-													</span>
-													@enderror
-												</div> --}}
-												<!--end::Col-->
-												{{-- <!--begin::Col-->
-												<div class="col-md-6 fv-row mb-5">
-													<label class="form-label">Class</label>
-
-													<input type="text" name="assigned_class" value="{{$user->class->id ?? ''}}" id="inputClass" class="form-control form-control-solid @error('class') is-invalid @enderror">
-													@error('assigned_class')
-													<span class="invalid-feedback" role="alert">
-														<strong>{{ $message }}</strong>
-													</span>
-													@enderror
-												</div>
-												<!--end::Col--> --}}
-												<!--begin::Col-->
 												<div class="col-md-6 fv-row mb-5">
 													<label class="form-label">Class</label>
 													<select name="assigned_class" id="inputClass" class="form-select form-select-solid @error('assigned_class') is-invalid @enderror">
@@ -162,7 +141,7 @@
 
 												<div class="col-md-6 fv-row mb-5">
 													<label class="form-label">Interests</label>
-													<select name="genre[]" class="form-select form-select-solid" data-control="select2" multiple size="4">
+													<select name="genre[]" class="form-select form-select-solid" data-control="select2" multiple size="4" required>
 														<option value="1" disabled>Select Interests</option>
 														@foreach ($genrelist as $genre)
 															<option value="{{ $genre->id }}"

@@ -64,8 +64,9 @@
                                 <tr class="fw-bold text-muted">
                                     <th class="ps-3">User Name</th>
                                     <th class="">Email</th>
+                                    <th class="">Class</th>
                                     <th class="">Date Of Birth</th>
-                                    <th class="pe-3 text-center">Actions</th>
+                                    <th class="pe-3 text-end" data-orderable="false">Actions</th>
                                 </tr>
 
                             </thead>
@@ -90,6 +91,21 @@
                                     </td>
                                     <td class="align-middle">
                                         <div class="text-dark fw-bold d-block">{{$user['email']}}</div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="text-dark fw-bold d-block">
+                                            @php $hasClass = false; @endphp
+                                    
+                                            @foreach ($classlist as $class)
+                                                @if ($user->id == $class->teacher_id)
+                                                    {{ $class->class_name }}
+                                                    @php $hasClass = true; @endphp
+                                                @endif
+                                            @endforeach
+                                            @if (!$hasClass)
+                                                N/A
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="align-middle">
                                         <div class="text-dark fw-bold">{{$user['date_of_birth']}}</div>

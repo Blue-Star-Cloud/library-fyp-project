@@ -85,6 +85,9 @@
 																		<span class="invalid-feedback" role="alert">
 																			<strong>{{ $message }}</strong>
 																		</span>
+																		<span class="invalid-feedback" role="alert">
+																			The password must have one uppercase letter, one number, a special case character and must be minimum 8 letters length
+																		</span>
 																		@enderror
 																	</div>
 																@endif

@@ -40,6 +40,9 @@ class GenreController extends Controller
     public function genrestore(Request $request)
     {
         //dd($request);
+        $request->validate([
+            'genre_name' => ['required'],
+        ]);
         $genre = new Genre();
         $genre->genre_name = $request->genre_name;
         $genre->save();

@@ -145,42 +145,7 @@
 
                                 @endforeach
                                 @else
-                                {{-- @foreach ($questionslist as $question)
-                                    @if($question->book_id == $selectedid)
-                                    <tbody>
-                                    <tr>
-                                        <td class="align-middle ps-3">
-                                            <div class="d-flex align-items-center">
-                                                <div class="symbol symbol-50px me-3 bg-light">
-                                                    <img src="assets/media/svg/avatars/001-boy.svg"
-                                                        class="" alt=""/>
-                                                </div>
-                                                <div class="d-flex justify-content-start flex-column">
-                                                    <div class="text-dark fw-bold d-block">{{$question['question_text']}}
-                    </div>
-                </div>
-            </div>
-            </td>
-            <td class="align-middle">
-                <div class="text-dark fw-bold d-block">{{$question['question_type']}}</div>
-            </td>
-            <td class="align-middle">
-                <div class="text-dark fw-bold d-block">{{$question['book_id']}}</div>
-            </td>
-            <td class="align-middle text-end pe-3">
-                <a href="{{route('editquestion',['id'=>$question['id']])}}" class="btn btn-light-primary btn-icon h-35px w-35px">
-                    <i class="fa-duotone fa-pen fs-4  h-35px w-35px align-items-center justify-content-center" title="Edit" data-bs-toggle="tooltip" data-bs-placement="top"></i></a>
-                <a href="{{route('deletequestion',['id'=>$question['id']])}}" button type="button"
-                    class=" btn btn-light-danger btn-icon h-35px w-35px"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    title="Delete">
-                    <i class="fa-duotone fa-trash fs-4 h-35px w-35px align-items-center justify-content-center"></i>
-                </a>
-            </td>
-            </tr>
-            </tbody>
-            @endif
-            @endforeach --}}
+                                
             @endif
             </tbody>
             <!--end::Table body-->

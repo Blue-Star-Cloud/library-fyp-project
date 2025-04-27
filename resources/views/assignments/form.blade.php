@@ -55,45 +55,46 @@
 									<!--begin::Col-->
 									<div class="col-md-6 fv-row mb-5">
 										<label class="form-label">Name of Assignment</label>
-										<input name="name" id="inputName" type="text" class="form-control form-control-solid">
+										<input name="name" id="inputName" type="text" class="form-control form-control-solid @error('name') is-invalid @enderror">
+										@error('name')
+											<span class="invalid-feedback" role="alert">
+												<strong>{{ $message }}</strong>
+											</span>
+										@enderror
 									</div>
 									<!--end::Col-->
 									<!--begin::Col-->
 									<div class="col-md-6 fv-row mb-5">
 										<label class="form-label">Assign To</label>
 
-										<select name="student_id[]" class="form-select form-select-solid" data-control="select2" multiple size="4">
+										<select name="student_id[]" class="form-select form-select-solid @error('student_id') is-invalid @enderror" data-control="select2" multiple size="4" >
 											<option disabled>Select Students</option>
 											@foreach($userslist as $user)
 											<option value="{{$student_id = $user->id}}">{{ $user->name }}</option>
 											@endforeach
 										</select>
+										@error('student_id')
+											<span class="invalid-feedback" role="alert">
+												<strong>{{ $message }}</strong>
+											</span>
+										@enderror
 
 									</div>
 									<!--end::Col-->
-									<!--begin::Col-->
-									{{-- <div class="col-md-6 fv-row mb-5">
-													<label class="form-label">Books List:</label>
-												
-													<select name="book_id"class="form-select form-select-solid">
-														<option value="1" selected="selected">Book Name</option>
-														@foreach($bookslist as $book)
-														<option value="{{$book_id = $book['id']}}">{{ $book['title']}}</option>
-									@endforeach
-									</select>
-									<!--end::Col-->
-
-								</div> --}}
-								<!--end::Col-->
 
 
 								<label class="form-label">Select Questions</label>
-								<select name="questionlist[]" class="form-select form-select-solid" data-control="select2" multiple size="4">
+								<select name="questionlist[]" class="form-select form-select-solid @error('questionlist') is-invalid @enderror" data-control="select2" multiple size="4">
 									<option disabled value="">Please select Questions</option>
 									@foreach($questionslist as $question)
 									<option value="{{$question->id}}">{{ $question->question_text }}</option>
 									@endforeach
 								</select>
+								@error('questionlist')
+									<span class="invalid-feedback" role="alert">
+										<strong>{{ $message }}</strong>
+									</span>
+								@enderror
 
 
 

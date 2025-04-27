@@ -51,7 +51,6 @@ class FormClassController extends Controller
      */
     public function storeformclass(Request $request)
     {
-        // dd($request->all());
 
         $request->validate([
             'teacher_id' => 'required',
@@ -103,7 +102,6 @@ class FormClassController extends Controller
         User::whereIn('id', $studentIds)->update(['assigned_class' => $request->class_id]);
 
 
-        // dd($request->all());
 
         return back()->with('success', 'Students assigned to class successfully!');
     }

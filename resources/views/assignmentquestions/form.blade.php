@@ -39,11 +39,7 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="">
-                {{-- @if ($assignmentquestion->assignment['status'] == 'Pending Feedback')
-								<form action="{{route('updatefeedback')}}" method="POST">
-							@else --}}
                 <form action="{{ route('updateanswerquestions') }}" method="POST">
-                    {{-- @endif --}}
                     @csrf
 
                     <!--begin::Row-->
@@ -53,7 +49,6 @@
                                 <div class="card-header align-items-center px-3 min-h-50px">
                                     <h3 class=" mb-0">Assignment Questions</h3>
                                 </div>
-                                {{-- <input type="hidden" name="assignment_id" value="{{$assignmentquestion->assignment_id['assignment_id'] ?? ''}}" class="form-control form-control-solid"> --}}
                                 <input type="hidden" name="user_id" value="{{ Auth::user()->id }}"
                                     class="form-control form-control-solid">
                                 <input type="hidden" name="user_role" value="{{ Auth::user()->role }}"

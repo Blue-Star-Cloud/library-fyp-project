@@ -55,6 +55,11 @@ class ReviewController extends Controller
     public function storereview(Request $request)
     {
         //dd($request);
+        $request->validate([
+            'book_id' => ['required'],
+            'rating' => ['required'],
+            'comment_text' => ['required'],
+        ]);
         $review = new Review();
         $review->book_id = $request->book_id;
         $review->student_id = $request->student_id;
@@ -104,14 +109,7 @@ class ReviewController extends Controller
         ]);
         $id = $request->id;
         $note = Review::find(id: $id);
-        //$note->update($request->all());
-        //dd($note);
-        //$note->update($request->all());
         $note->update($request->only('rating', 'comment_text'));
-        //$note->update($request->all()->except(['title', 'content']));
-        //$note->update($request->title);
-        //$note->update($request->all());
-        //User::where($id)->update($request->User);
         return redirect()->route('reviews');
 
     }

@@ -371,7 +371,7 @@
                                             <span class="menu-icon">
                                                 <i class="fa-regular fa-star fs-3"></i>
                                             </span>
-                                            <span class="menu-title">Form Teachers</span>
+                                            <span class="menu-title">Form Classes</span>
                                         </a>
                                         <!--begin:Menu link-->
                                         @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')

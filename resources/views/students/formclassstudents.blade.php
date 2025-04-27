@@ -114,7 +114,9 @@
                                         <div class="text-dark fw-bold d-block">{{$user['or_level']}}</div>
                                     </td>
                                     <td class="align-middle">
-                                        <div class="text-dark fw-bold d-block">{{ $user->genre ? $user->genre->pluck('genre_name')->implode(', ') : 'N/A'}}</div>
+                                        <div class="text-dark fw-bold d-block">
+                                            {{ $user->genre && $user->genre->isNotEmpty() ? $user->genre->pluck('genre_name')->implode(', ') : 'N/A' }}
+                                        </div>
                                     </td>
                                     <td class="align-middle">
                                         <div class="text-dark fw-bold">{{ $user->class ? $user->class->class_name : 'N/A' }}</div>

@@ -45,6 +45,12 @@ class ClassNoteController extends Controller
      */
     public function classnotestore(Request $request)
     {
+        $request->validate([
+            'title' => ['required'],
+            'date' => ['required'],
+            'class_topics' => ['required'],
+            'class_objectives' => ['required'],
+        ]);
         $classnote = new ClassNote();
         $classnote->title = $request->title;
         $classnote->date = $request->date;
@@ -53,7 +59,6 @@ class ClassNoteController extends Controller
         $classnote->teacher_id = $request->teacher_id;
         $classnote->form_class_id = $request->form_class_id;
         $classnote->save();
-        //$note->user()->attach($request->id);
         return redirect()->route('classnotesindex',['user_id'=>$request->teacher_id]);
     }
 

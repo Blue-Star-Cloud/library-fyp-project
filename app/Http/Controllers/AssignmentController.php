@@ -70,12 +70,18 @@ class AssignmentController extends Controller
     public function storeassignment(Request $request)
     {
         // dd($request->all());
-
+        $request->validate([
+            'name' => ['required'],
+            'book_id' => ['required'],
+            'student_id' => ['required'],
+            'or_level' => ['required'],
+            'questionlist' => ['required']
+        ]);
         foreach ($request->student_id as $student) {
 
             $assignment = new Assignment();
             $assignment->name = $request->name;
-            $assignment->book_id = $request->book_id; //changed from $assignment->book_id = 42;
+            $assignment->book_id = $request->book_id; 
             $assignment->student_id = $student;
             $assignment->teacher_id = $request->teacher_id;
             $assignment->status = $request->status;

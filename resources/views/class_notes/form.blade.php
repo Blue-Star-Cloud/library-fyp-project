@@ -58,8 +58,14 @@
 												<!--begin::Col-->
 												<div class="col-md-6 fv-row mb-5">
 													<label class="form-label">Title</label>
-													<input name="title" id="inputTitle" value="{{$note->title ?? ''}}" type="text" class="form-control form-control-solid"{{ Auth::user()->role == 'student' ? 'disabled' : '' }}>
+													<input name="title" id="inputTitle" value="{{$note->title ?? ''}}" type="text" class="form-control form-control-solid @error('title') is-invalid @enderror"{{ Auth::user()->role == 'student' ? 'disabled' : '' }}>
+													@error('title')
+													<span class="invalid-feedback" role="alert">
+														<strong>{{ $message }}</strong>
+													</span>
+													@enderror
 												</div>
+												
 												<!--end::Col-->
 												<!--begin::Col-->
 												<div class="col-md-6 fv-row mb-5">
@@ -68,14 +74,24 @@
 												</div>
 												<!--end::Col-->
 												<!--begin::Col-->
-												<input hidden name="teacher_id" id="teacher_id"class="form-select form-select-solid"value="{{Auth::id()}}">
+												<input hidden name="teacher_id" id="teacher_id"class="form-select form-select-solid @error('class_topics') is-invalid @enderror"value="{{Auth::id()}}">
 												<!--end::Col-->
 											</div>
 											<div class="mb-0 mt-1">
 												<label class="form-label">Class Topics</label>
-												<textarea name="class_topics" id="inputClassTopics" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7" rows="6" name="message" {{ Auth::user()->role == 'student' ? 'disabled' : '' }}>{{$note->class_topics ?? ''}}</textarea>
+												<textarea name="class_topics" id="inputClassTopics" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7 @error('class_topics') is-invalid @enderror" rows="6" name="message" {{ Auth::user()->role == 'student' ? 'disabled' : '' }}>{{$note->class_topics ?? ''}}</textarea>
+												@error('class_topics')
+													<span class="invalid-feedback" role="alert">
+														<strong>{{ $message }}</strong>
+													</span>
+												@enderror
 												<label class="form-label">Class Objectives</label>
-												<textarea name="class_objectives" id="inputClassTopics" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7" rows="6" name="message" {{ Auth::user()->role == 'student' ? 'disabled' : '' }}>{{$note->class_ojectives ?? ''}}</textarea>
+												<textarea name="class_objectives" id="inputClassTopics" class="form-control form-control-solid placeholder-gray-600 fw-bold fs-4 ps-9 pt-7 @error('class_objectives') is-invalid @enderror" rows="6" name="message" {{ Auth::user()->role == 'student' ? 'disabled' : '' }}>{{$note->class_objectives ?? ''}}</textarea>
+												@error('class_objectives')
+													<span class="invalid-feedback" role="alert">
+														<strong>{{ $message }}</strong>
+													</span>
+												@enderror
 												<!--begin::Submit-->
 												@if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')
 												<button type="submit" class="btn btn-primary float-end mt-5">Submit</button>

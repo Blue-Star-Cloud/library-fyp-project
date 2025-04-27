@@ -21,7 +21,7 @@ class Book extends Model
         'image'
     ];
 
-    public function genres()  //genre vs genres
+    public function genres()  
     {
         return $this->belongsToMany(Genre::class);
     }

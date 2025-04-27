@@ -45,19 +45,10 @@ class StudentController extends Controller
 
     public function formclassindex($teacher_id)
     {
-        // dd("here");
-        // $data = User::where('role', 'student')->get();
-        // $classes = FormClass::where('teacher_id', 62)
-        // ->with('students')
-        // ->get();
-
-        // dd($classes);
-        
-        //$data = User::where('role', operator: 'student')->with('class')->get();
-        // $data = User::where('role', 'student')->with('class','book')->get();
-        // $classes = FormClass::where('teacher_id',$teacher_id)->with('students')->get();
-
         $class = FormClass::where('teacher_id', $teacher_id)->first();
+        if ($class == null){
+            return redirect()->back();
+        }
 
         $data = User::where('role', 'student')
             ->where('assigned_class', $class->id)
@@ -66,7 +57,7 @@ class StudentController extends Controller
         // if (!$data->hasClass()) {
         //     return redirect()->back()->withErrors(['msg' => 'You do not have an assigned class']);
         // }
-        //else
+        // else
         $classes = FormClass::where('teacher_id', $teacher_id)->with('students')->get();
         
         return view('students.formclassstudents', ['userslist' => $data, 'classes' => $classes]);
@@ -96,14 +87,14 @@ class StudentController extends Controller
         }
         
 
-        //return view('students.list',['userslist'=>$data]);
         return view('students.profile', ['user' => $user, 'reviewsCount' => $reviewsCount, 'averages'=> $averages]);
     }
 
     public function teacherindex()
     {
         $data = User::all();
-        return view('teachers.list', ['userslist' => $data]);
+        $formclassdata = FormClass::all();
+        return view('teachers.list', ['userslist' => $data,'classlist'=>$formclassdata]);
     }
 
     /**
@@ -146,7 +137,6 @@ class StudentController extends Controller
         $user->current_book_name = $request->current_book_name;
         $user->topic = $request->topic;
         $user->assigned_class = $request->assigned_class;
-        //$user->interests = $request->interests;
         $user->save();
         $user->genre()->attach($request->genre);
         if (Auth::user()->role == 'teacher'){
@@ -162,7 +152,7 @@ class StudentController extends Controller
         $request->validate([
             'name' => ['required'],
             'email' => ['required'],
-            'password' => ['required'],
+            'password' => ['required','string','min:8','regex:/^(?=.*[A-Z])(?=.*[\W_]).+$/'],
             'date_of_birth' => ['required'],
         ]);
         $user = new User();
@@ -172,7 +162,6 @@ class StudentController extends Controller
         $user->date_of_birth = $request->date_of_birth;
         $user->role = $request->role;
         $user->current_book_name = $request->current_book_name;
-        //$user->interests = $request->interests;
         $user->save();
         $user->genre()->attach($request->interests);
         return redirect()->route('teacherusers');
@@ -188,10 +177,9 @@ class StudentController extends Controller
 
     public function delete($id)
     {
-        //$book = Book::find($id);
-        //$book->delete();
+        $formclass = FormClass::where('teacher_id', $id)
+        ->update(['teacher_id' => NULL]);
         User::destroy($id);
-        //return redirect()->route('users');
         return redirect()->back();
     }
     /**
@@ -221,31 +209,16 @@ class StudentController extends Controller
         $request->validate([
             'name' => ['required'],
         ]);
-        //dd($request);
         $id = $request->id;
         $user = User::find(id: $id);
         $user->update($request->all());
-        //dd($request);
         $user->genre()->sync($request->genre);
-        //User::where($id)->update($request->User);
         if ($user->role === 'teacher') {
             return redirect()->route('teacherusers');
         } elseif ($user->role === 'student') {
             return redirect()->route('users');
         }
     }
-
-
-    // public function assign($id)
-    // {
-    //     $user = User::find($id);
-    //     $studentInterest = $user->interests;
-    //     $book = Book::where('genre',$studentInterest)->first();
-    //     $user->book_id = $book->id;
-    //     $user->save();
-    //     return redirect()->back();
-    // }
-
 
     public function assign($id)
     {
