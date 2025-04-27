@@ -131,6 +131,26 @@
                                                     <!--end::Info-->
                                                 </div>
                                                 <!--end::Item-->
+                                                <!--begin::Item-->
+                                                <div class="d-flex align-items-center">
+                                                    <!--begin::Symbol-->
+                                                    <div class="symbol symbol-30px symbol-circle me-3">
+                                                        <span class="symbol-label bg-success">
+                                                            <i class="ki-duotone ki-abstract-41 fs-5 text-white">
+                                                                <span class="path1"></span>
+                                                                <span class="path2"></span>
+                                                            </i>
+                                                        </span>
+                                                    </div>
+                                                    <!--end::Symbol-->
+                                                    <!--begin::Info-->
+                                                    <div class="m-0">
+                                                        <span class="fw-semibold text-gray-500 d-block fs-8">OR levels </span>
+                                                        <span class="fw-bold text-gray-800 fs-7">{{ (int) $book->or_level }}</span>
+                                                    </div>
+                                                    <!--end::Info-->
+                                                </div>
+                                                <!--end::Item-->
                                             </div>
                                             <!--end::Items-->
                                         </div>

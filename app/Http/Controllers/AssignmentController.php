@@ -72,9 +72,7 @@ class AssignmentController extends Controller
         // dd($request->all());
         $request->validate([
             'name' => ['required'],
-            'book_id' => ['required'],
             'student_id' => ['required'],
-            'or_level' => ['required'],
             'questionlist' => ['required']
         ]);
         foreach ($request->student_id as $student) {

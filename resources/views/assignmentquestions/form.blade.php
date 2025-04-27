@@ -54,11 +54,16 @@
                                 <input type="hidden" name="user_role" value="{{ Auth::user()->role }}"
                                     class="form-control form-control-solid">
                                 @foreach ($assignmentquestionslist as $index => $assignmentquestion)
-                                    <div class="card-body p-3 pt-0">
+                                <div class="card-body p-3 pt-0">
+                                    <div class="mb-5 mt-3">
+                                        <div class="bg-light p-3 rounded border shadow-sm">
+                                            <h4 class="mb-0 text-info fw-semibold">Assigned Book : {{ $assignmentquestion->assignment->student->current_book_name ?? '' }}</h4>
+                                        </div>
+                                    </div>
+    
+                                    <input type="hidden" name="questions[{{$index}}][id]" value="{{$assignmentquestion->id ?? ''}}" class="form-control form-control-solid">
+                                    <input type="hidden" name="book_id" value="{{ $assignmentquestion->assignment->student->book_id ?? 0 }}" class="form-control form-control-solid">
 
-                                        <input type="hidden" name="questions[{{ $index }}][id]"
-                                            value="{{ $assignmentquestion->id ?? '' }}"
-                                            class="form-control form-control-solid">
 
                                         <div class="row">
                                             <!--begin::Col-->
