@@ -21,26 +21,24 @@ class QuestionController extends Controller
 
     public function viewquestions()
     {
-        $data = Question::with('Book')->get();
-        return view('questions.list',['questionslist'=>$data]);
-    }    
-    
+        $data = Question::with('Book')->orderBy('question_text', 'asc')->get();
+        return view('questions.list', ['questionslist' => $data]);
+    }
+
     public function viewquestion($id)
     {
-        $data = Question::all(); //change query with id
-        return view( 'questions.list',['questions_list'=>$data,'selectedid'=>$id]);
+        $data = Question::orderBy('question_text', 'asc')->get();
+        return view('questions.list', ['questions_list' => $data, 'selectedid' => $id]);
     }
 
     public function createquestion()
     {
-        $books = Book::all();
-        $users = User::all();
-        return view('questions.form',['bookslist'=>$books, 'userslist'=>$users]);
+        $books = Book::orderBy('title', 'asc')->get();
+        return view('questions.form', ['bookslist' => $books]);
     }
 
     public function questionstore(Request $request)
     {
-        //dd(vars: $request);
         $request->validate([
             'question_text' => ['required'],
             'question_type' => ['required'],
@@ -58,7 +56,7 @@ class QuestionController extends Controller
     public function editquestion($id)
     {
         $question = Question::with('Book')->find($id);
-        return view('questions.form',['question'=>$question]);
+        return view('questions.form', ['question' => $question]);
     }
 
     public function updatequestion(Request $request)

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Review;
-use App\Http\Requests\StoreReviewsRequest;
-use App\Http\Requests\UpdateReviewsRequest;
 use App\Models\User;
 use App\Models\Book;
 use Auth;
@@ -27,15 +25,18 @@ class ReviewController extends Controller
     public function reviewlist()
     {
         if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin') {
-            $data = Review::with('student', 'book')->get();
+            $data = Review::with('student', 'book')->orderBy('id', 'desc')->get();
         } else {
-            $data = Review::with(['student' => function ($query) {
-                $query->where('role', 'student');
-            }, 'book'])
+            $data = Review::with([
+                'student' => function ($query) {
+                    $query->where('role', 'student');
+                },
+                'book'
+            ])
                 ->where('student_id', auth()->id()) // Filter reviews where user_id matches the logged-in user
+                ->orderBy('id', 'desc')
                 ->get();
         }
-        // dd(auth()->id());
         return view('reviews.list', ['reviewslist' => $data]);
     }
 
@@ -44,7 +45,7 @@ class ReviewController extends Controller
      */
     public function createreview($student_id)
     {
-        $bookslist = Book::all();
+        $bookslist = Book::orderBy('title', 'asc')->get();
         $student = User::where('id', $student_id)->first();
         return view('reviews.form', compact('bookslist', 'student'));
     }
@@ -54,7 +55,6 @@ class ReviewController extends Controller
      */
     public function storereview(Request $request)
     {
-        //dd($request);
         $request->validate([
             'book_id' => ['required'],
             'rating' => ['required'],
@@ -73,21 +73,17 @@ class ReviewController extends Controller
      */
     public function showBookReview($book_id)
     {
-        $data = Review::with(['student' => function ($query) {
-            $query->where('role', 'student');
-        }, 'book'])
+        $data = Review::with([
+            'student' => function ($query) {
+                $query->where('role', 'student');
+            },
+            'book'
+        ])
             ->where('book_id', $book_id) // Filter reviews where user_id matches the logged-in user
             ->get();
 
 
         return view('reviews.list', ['reviewslist' => $data]);
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show(Review $review)
-    {
-        //
     }
 
     /**
@@ -96,13 +92,13 @@ class ReviewController extends Controller
     public function editreview($id)
     {
         $review = Review::find($id);
-        return view('reviews.form', compact( 'review'));
+        return view('reviews.form', compact('review'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function updatereview (Request $request)
+    public function updatereview(Request $request)
     {
         $request->validate([
             'comment_text' => ['nullable']

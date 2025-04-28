@@ -125,28 +125,6 @@
                                         </a>
                                     </div>
                                     <!--end::Menu item-->
-                                    <!--begin::Menu item-->
-                                    <div class="menu-item px-3 my-0">
-                                        <a href="#" class="menu-link px-3 py-2" data-kt-element="mode"
-                                            data-kt-value="dark">
-                                            <span class="menu-icon" data-kt-element="icon">
-                                                <i class="fa-duotone fa-moon fs-3"></i>
-                                            </span>
-                                            <span class="menu-title">Dark</span>
-                                        </a>
-                                    </div>
-                                    <!--end::Menu item-->
-                                    <!--begin::Menu item-->
-                                    <div class="menu-item px-3 my-0">
-                                        <a href="#" class="menu-link px-3 py-2" data-kt-element="mode"
-                                            data-kt-value="system">
-                                            <span class="menu-icon" data-kt-element="icon">
-                                                <i class="fa-duotone fa-desktop fs-3"></i>
-                                            </span>
-                                            <span class="menu-title">System</span>
-                                        </a>
-                                    </div>
-                                    <!--end::Menu item-->
                                 </div>
                                 <!--end::Menu-->
                             </div>
@@ -299,14 +277,12 @@
                                         @endif
                                         <!--end:Menu link-->
                                         <!--begin:Menu link-->
-                                        @if (Auth::user()->role == 'admin')
-                                            <a class="menu-link" hidden href="{{ route('dashboard') }}">
-                                                <span class="menu-icon">
-                                                    <i class="fa-solid fa-user-gear fs-3"></i>
-                                                </span>
-                                                <span class="menu-title">Admins</span>
-                                            </a>
-                                        @endif
+                                        <a class="menu-link" href="{{ route('formclassteacher') }}">
+                                            <span class="menu-icon">
+                                                <i class="fa-regular fa-star fs-3"></i>
+                                            </span>
+                                            <span class="menu-title">Classes</span>
+                                        </a>
                                         <!--end:Menu link-->
                                         <!--begin:Menu link-->
                                         <a class="menu-link" href="{{ route('books') }}">
@@ -317,37 +293,22 @@
                                         </a>
                                         <!--end:Menu link-->
                                         <!--begin:Menu link-->
-
-
-                                        @if (Auth::user()->role == 'student')
-                                            <a class="menu-link" href="{{ route('assignedBook') }}">
-                                                <span class="menu-icon">
-                                                    <i class="fa-solid fa-user-gear fs-3"></i>
-                                                </span>
-                                                <span class="menu-title">Assigned Book</span>
-                                            </a>
-                                        @endif
-
+                                        <a class="menu-link" href="{{ route('reviews') }}">
+                                            <span class="menu-icon">
+                                                <i class="fa-regular fa-star fs-3"></i>
+                                            </span>
+                                            <span class="menu-title">Reviews</span>
+                                        </a>
                                         <!--end:Menu link-->
                                         <!--begin:Menu link-->
                                         @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')
-                                            <a class="menu-link" href="{{ route(name: 'notes') }}">
+                                            <a class="menu-link" href="{{ route('genres') }}">
                                                 <span class="menu-icon">
-                                                    <i class="fa-regular fa-note-sticky fs-3"></i>
+                                                    <i class="fa-regular fa-icons fs-3"></i>
                                                 </span>
-                                                <span class="menu-title">Student Report</span>
+                                                <span class="menu-title">Genre</span>
                                             </a>
                                         @endif
-                                        <!--end:Menu link-->
-                                        <!--begin:Menu link-->
-                                        {{-- @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'student' or Auth::user()->role == 'admin') --}}
-                                            <a class="menu-link" href="{{ route('classnotesindex', ['user_id' => Auth::user()->id]) }}">
-                                                <span class="menu-icon">
-                                                    <i class="fa-regular fa-note-sticky fs-3"></i>
-                                                </span>
-                                                <span class="menu-title">Weekly Topic</span>
-                                            </a>
-                                        {{-- @endif --}}
                                         <!--end:Menu link-->
                                         <!--begin:Menu link-->
                                         @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')
@@ -360,19 +321,35 @@
                                         @endif
                                         <!--end:Menu link-->
                                         <!--begin:Menu link-->
-                                        <a class="menu-link" href="{{ route('reviews') }}">
-                                            <span class="menu-icon">
-                                                <i class="fa-regular fa-star fs-3"></i>
-                                            </span>
-                                            <span class="menu-title">Reviews</span>
-                                        </a>
+                                        @if (Auth::user()->role == 'student')
+                                            <a class="menu-link" href="{{ route('assignedBook') }}">
+                                                <span class="menu-icon">
+                                                    <i class="fa-solid fa-user-gear fs-3"></i>
+                                                </span>
+                                                <span class="menu-title">Assigned Book</span>
+                                            </a>
+                                        @endif
                                         <!--end:Menu link-->
-                                        <a class="menu-link" href="{{ route('formclassteacher') }}">
-                                            <span class="menu-icon">
-                                                <i class="fa-regular fa-star fs-3"></i>
-                                            </span>
-                                            <span class="menu-title">Form Classes</span>
-                                        </a>
+                                        <!--begin:Menu link-->
+                                        @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')
+                                            <a class="menu-link" href="{{ route(name: 'notes') }}">
+                                                <span class="menu-icon">
+                                                    <i class="fa-regular fa-note-sticky fs-3"></i>
+                                                </span>
+                                                <span class="menu-title">Student Reports</span>
+                                            </a>
+                                        @endif
+                                        <!--end:Menu link-->
+                                        <!--begin:Menu link-->
+                                        {{-- @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'student' or Auth::user()->role == 'admin') --}}
+                                            <a class="menu-link" href="{{ route('classnotesindex', ['user_id' => Auth::user()->id]) }}">
+                                                <span class="menu-icon">
+                                                    <i class="fa-regular fa-note-sticky fs-3"></i>
+                                                </span>
+                                                <span class="menu-title">Class Notes</span>
+                                            </a>
+                                        {{-- @endif --}}
+                                        <!--end:Menu link-->
                                         <!--begin:Menu link-->
                                         @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')
                                             <a class="menu-link" href="{{ route('assignments') }}">
@@ -380,17 +357,6 @@
                                                     <i class="fa-regular fa-star fs-3"></i>
                                                 </span>
                                                 <span class="menu-title">Assignments</span>
-                                            </a>
-                                        @endif
-                                        <!--end:Menu link-->
-
-                                        <!--begin:Menu link-->
-                                        @if (Auth::user()->role == 'teacher' or Auth::user()->role == 'admin')
-                                            <a class="menu-link" href="{{ route('genres') }}">
-                                                <span class="menu-icon">
-                                                    <i class="fa-regular fa-icons fs-3"></i>
-                                                </span>
-                                                <span class="menu-title">Genre</span>
                                             </a>
                                         @endif
                                         <!--end:Menu link-->

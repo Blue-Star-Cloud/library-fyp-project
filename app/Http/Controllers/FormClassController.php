@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Book;
 use App\Models\Review;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Http\Request;
 
 class FormClassController extends Controller
@@ -26,7 +25,7 @@ class FormClassController extends Controller
      */
     public function formclassteacherlist()
     {
-        $data = FormClass::with(['teacher', 'substituteteacher'])->get();
+        $data = FormClass::with(['teacher'])->orderBy('class_name', 'asc')->get();
         return view('formclasses.list', ['formclasseslist' => $data]);
     }
 
@@ -35,14 +34,14 @@ class FormClassController extends Controller
      */
     public function createformclass()
     {
-        $teachers = User::where('role', 'teacher')->get();
+        $teachers = User::where('role', 'teacher')->orderBy('name', 'asc')->get();
         return view('formclasses.form', ['teacherslist' => $teachers]);
     }
 
     public function classStudents()
     {
-        $data = User::where('role', 'student')->with('class', 'book')->get();
-        $classes = FormClass::all();
+        $data = User::where('role', 'student')->with('class', 'book')->orderBy('name', 'asc')->get();
+        $classes = FormClass::orderBy('class_name', 'asc')->get();
         return view('students.list', ['userslist' => $data, 'classes' => $classes]);
     }
 
@@ -143,7 +142,6 @@ class FormClassController extends Controller
                 ->whereNotIn('books.id', $reviewedBookIds)
                 ->inRandomOrder()
                 ->value('book_genre.book_id');
-            dd($assignedBookId, $studentOrLevel, $preferredGenreIds, $reviewedBookIds);
             // Step 2: Preferred genres + OR level +1
             if (!$assignedBookId) {
                 $assignedBookId = DB::table('book_genre')
@@ -190,17 +188,9 @@ class FormClassController extends Controller
      */
     public function editformclass($id)
     {
-        $teachers = User::where('role', 'teacher')->get();
+        $teachers = User::where('role', 'teacher')->orderBy('name', 'asc')->get();
         $formclass = FormClass::find($id);
         return view('formclasses.form', ['teacherslist' => $teachers, 'formclass' => $formclass]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, FormClass $formClass)
-    {
-        //
     }
 
     /**

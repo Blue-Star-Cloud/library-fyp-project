@@ -383,7 +383,7 @@
     type: 'pie'
     },
     title: {
-    text: 'Books by Category'
+    text: 'Books by Genre'
     },
     tooltip: {
     valueSuffix: '%'

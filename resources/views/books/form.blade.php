@@ -121,10 +121,16 @@
                                             <!--begin::Col-->
                                             <div class="col-md-6 fv-row mb-5">
                                                 <label class="form-label">Category</label>
-                                                <select name="category" id="inputQuestionType" class="form-select form-select-solid" required>
-                                                    <option disabled {{ empty($book) ? 'selected' : '' }}>Select Category</option>
-                                                    <option value="Fiction" {{ !empty($book) && $book['category'] == 'Fiction' ? 'selected' : '' }}>Fiction</option>
-                                                    <option value="Non-Fiction" {{ !empty($book) && $book['category'] == 'Non-Fiction' ? 'selected' : '' }}>Non-Fiction</option>
+                                                <select name="category" id="inputQuestionType"
+                                                    class="form-select form-select-solid" required>
+                                                    <option disabled {{ empty($book) ? 'selected' : '' }}>Select Category
+                                                    </option>
+                                                    <option value="Fiction"
+                                                        {{ !empty($book) && $book['category'] == 'Fiction' ? 'selected' : '' }}>
+                                                        Fiction</option>
+                                                    <option value="Non-Fiction"
+                                                        {{ !empty($book) && $book['category'] == 'Non-Fiction' ? 'selected' : '' }}>
+                                                        Non-Fiction</option>
                                                 </select>
                                                 @error('category')
                                                     <span class="invalid-feedback" role="alert">
@@ -151,27 +157,27 @@
                                             <div class="col-md-6 fv-row mb-5">
                                                 <label class="form-label">OR Level</label>
                                                 <select name="or_level" id="inputOrLevel"
-														class="form-select form-select-solid @error('or_level') is-invalid @enderror"
-														required
-														oninvalid="this.setCustomValidity('Please select an OR level')"
-														oninput="this.setCustomValidity('')">
+                                                    class="form-select form-select-solid @error('or_level') is-invalid @enderror"
+                                                    required oninvalid="this.setCustomValidity('Please select an OR level')"
+                                                    oninput="this.setCustomValidity('')">
 
-														<option value="" disabled {{ empty($book->or_level) ? 'selected' : '' }}>
-															Select OR Level
-														</option>
+                                                    <option value="" disabled
+                                                        {{ empty($book->or_level) ? 'selected' : '' }}>
+                                                        Select OR Level
+                                                    </option>
 
-														@for ($i = 1; $i <= 20; $i++)
-															<option value="{{ $i }}"
-																{{ (isset($book->or_level) && $book->or_level == $i) ? 'selected' : '' }}>
-																{{ $i }}
-															</option>
-														@endfor
-													</select>
-													@error('or_level')
-														<span class="invalid-feedback" role="alert">
-															<strong>{{ $message }}</strong>
-														</span>
-													@enderror
+                                                    @for ($i = 1; $i <= 20; $i++)
+                                                        <option value="{{ $i }}"
+                                                            {{ isset($book->or_level) && $book->or_level == $i ? 'selected' : '' }}>
+                                                            {{ $i }}
+                                                        </option>
+                                                    @endfor
+                                                </select>
+                                                @error('or_level')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
                                             </div>
                                             <div class="col-md-12 fv-row mb-5">
                                                 <label class="form-label">Content</label>
@@ -187,7 +193,7 @@
                                                 <label class="form-label">Image</label>
                                                 <input name="image" type="file" name="image"
                                                     class="form-control form-control-solid" required>
-                                                    @error('image')
+                                                @error('image')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -198,7 +204,7 @@
                                                 <!--begin::Submit-->
                                                 <button type="submit"
                                                     class="btn btn-primary float-end mt-5">Submit</button>
-                                                <a href="{{ route('users') }}" class="btn btn-warning">Cancel</a>
+                                                <a href="{{ url()->previous() }}" class="btn btn-warning">Cancel</a>                                                
                                                 <!--end::Submit-->
                                             </div>
                                         </div>

@@ -25,6 +25,6 @@ class ClassNote extends Model
 
     public function formclass()
     {
-        return $this->belongsTo(FormClass::class);
+        return $this->belongsTo(FormClass::class,'form_class_id');
     }
 }

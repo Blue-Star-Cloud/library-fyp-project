@@ -34,15 +34,11 @@
                 <div class="d-flex align-items-center gap-2 gap-lg-3">
                     <!--begin:: Add New-->
                     @if (Auth::user()->role == 'teacher')
-                    <a href={{ route('classnotecreate', ['user_id' => Auth::user()->id]) }}
-                        class="btn btn-sm fw-bold btn-success" data-bs-toggle="modal" data-bs-target={{ route('nform') }}><i
-                            class="fa-solid fa-plus me-1 fs-4"></i>Add New</a>
+                        <a href={{ route('classnotecreate', ['user_id' => Auth::user()->id]) }}
+                            class="btn btn-sm fw-bold btn-success" data-bs-toggle="modal"
+                            data-bs-target={{ route('nform') }}><i class="fa-solid fa-plus me-1 fs-4"></i>Add New</a>
                     @endif
                     <!--end::Primary button-->
-
-                    <!--begin:: Export-->
-                    <!-- <a href="#" class="btn btn-sm fw-bold btn-info"><i class="fa-duotone fa-download me-1 fs-4"></i>Export</a> -->
-                    <!--end:: Export-->
                 </div>
 
             </div>
@@ -69,8 +65,11 @@
                                     <tr class="fw-bold text-muted">
                                         <th class="ps-3">Title</th>
                                         <th class="">Date</th>
-                                        <th class="">Class Topics</th>
-                                        <th class="">Class Ojectives</th>
+                                        @if (Auth::user()->role == 'admin')
+                                        <th class="">Class Name</th>
+                                        @endif
+                                        <th class="">Weekly Class Topics</th>
+                                        <th class="">Weekly Learning Objectives</th>
                                         <th class="pe-3 text-end">Actions</th>
                                     </tr>
                                 </thead>
@@ -93,25 +92,20 @@
                                             <td class="align-middle">
                                                 <div class="text-dark fw-bold d-block">{{ $note['date'] }}</div>
                                             </td>
+                                            @if (Auth::user()->role == 'admin')
                                             <td class="align-middle">
-                                                <div class="text-dark fw-bold d-block">{{$note['class_topics']}}</div>
+                                                <div class="text-dark fw-bold d-block">{{ $note->formclass->class_name}}</div>
+                                            </td>
+                                            @endif
+                                            <td class="align-middle">
+                                                <div class="text-dark fw-bold d-block">
+                                                    {{ Str::limit($note['class_topics'], 15) }}</div>
                                             </td>
                                             <td class="align-middle">
-                                                <div class="text-dark fw-bold d-block">{{$note['class_objectives']}}</div>
+                                                <div class="text-dark fw-bold d-block">
+                                                    {{ Str::limit($note['class_objectives'], limit: 15) }}</div>
                                             </td>
                                             <td class="align-middle text-end pe-3">
-                                                {{-- <a href="{{route('profile',['id'=>$note['id']])}}"
-                                                        class="btn btn-light-success btn-icon h-35px w-35px">
-                                                            <i class="fa-duotone fa-eye fs-4  h-35px w-35px align-items-center justify-content-center"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top"
-                                                            title="Profile View"></i>
-                                                        </a> --}}
-                                                {{-- <a href="{{route('viewclassnote',['id'=>$note['id']])}}"
-                                                            class="btn btn-light-success btn-icon h-35px w-35px">
-                                                            <i class="fa-duotone fa-eye fs-4  h-35px w-35px align-items-center justify-content-center"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                title="View Assignment"></i>
-                                                        </a> --}}
                                                 @if (Auth::user()->role == 'student')
                                                     <a href="{{ route('classnoteedit', ['id' => $note['id']]) }}"
                                                         class="btn btn-light-success btn-icon h-35px w-35px">
@@ -128,7 +122,8 @@
                                                     <a href="{{ route('classnotedelete', ['id' => $note['id'], 'user_id' => $note['teacher_id']]) }}"
                                                         button type="button"
                                                         class=" btn btn-light-danger btn-icon h-35px w-35px"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Note">
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        title="Delete Note">
                                                         <i
                                                             class="fa-duotone fa-trash fs-4 h-35px w-35px align-items-center justify-content-center"></i>
                                                     </a>

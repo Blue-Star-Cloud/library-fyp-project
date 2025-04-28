@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FormClass;
 use App\Models\Note;
 use App\Models\user;
 use Illuminate\Http\Request;
 use App\Models\Assignment;
 use App\Models\ClassNote;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
@@ -19,20 +21,20 @@ class NoteController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = Note::all();
-        return view( 'note.list',['noteslist'=>$data]);
+        $data = Note::orderBy('id', 'desc')->get();
+        return view('note.list', ['noteslist' => $data]);
     }
 
     public function viewstudentnotes($id)
     {
-        $data = Note::all();
-        return view( 'note.list',['noteslist'=>$data,'selectedid'=>$id]);
+        $data = Note::orderBy('id', 'desc')->get();
+        return view('note.list', ['noteslist' => $data, 'selectedid' => $id]);
     }
 
     /**
@@ -40,8 +42,9 @@ class NoteController extends Controller
      */
     public function notecreate()
     {
-        $data = User::all();
-        return view( 'note.form',['userslist'=>$data]);
+        $teacher_class = FormClass::where('teacher_id', Auth::user()->id)->first();
+        $data = User::where('assigned_class', $teacher_class->id)->orderBy('name', 'asc')->get();
+        return view('note.form', ['userslist' => $data]);
     }
 
     /**
@@ -49,7 +52,6 @@ class NoteController extends Controller
      */
     public function notestore(Request $request)
     {
-        //dd(vars: $request);
         $request->validate([
             'title' => ['required'],
             'objectives_comments' => ['required'],
@@ -74,20 +76,12 @@ class NoteController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Note $note)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function editnote($id)
     {
         $note = Note::find($id);
-        return view('note.form',['note'=>$note]);
+        return view('note.form', ['note' => $note]);
     }
 
     /**
@@ -95,12 +89,20 @@ class NoteController extends Controller
      */
     public function updateNote(Request $request)
     {
-        $request->validate([
-            'content' => ['nullable']
-        ]);
         $id = $request->id;
         $note = Note::find(id: $id);
-        $note->update($request->only('title', 'content'));
+        $note->title = $request->title;
+        $note->date = $request->date;
+        $note->objectives_comments = $request->objectives_comments;
+        $note->reading_ability_progress = $request->reading_ability_progress;
+        $note->vipers_progress = $request->vipers_progress;
+        $note->class_objectives = $request->class_objectives;
+        $note->teacher_id = $request->teacher_id;
+        $note->student_id = $request->student_id;
+        $note->class_notes_id = $request->note_id;
+        $note->assignment_id = $request->assignment_id;
+        $note->student_class_id = $request->class_id;
+        $note->save();
         return redirect()->route('notes');
     }
 
@@ -115,12 +117,12 @@ class NoteController extends Controller
 
     public function getNotes($classId)
     {
-        $notes = ClassNote::where('form_class_id', $classId)->get();
+        $notes = ClassNote::where('form_class_id', $classId)->orderBy('id', 'desc')->get();
         return response()->json($notes);
     }
     public function getAssignments($studentId)
     {
-        $assignments = Assignment::where('student_id', $studentId)->get();
+        $assignments = Assignment::where('student_id', $studentId)->orderBy('id', 'desc')->get();
         return response()->json($assignments);
     }
     public function getNoteDetails($noteId)

@@ -16,14 +16,14 @@ class GenreController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = Genre::all();
-        return view( 'genre.list',['genrelist'=>$data]);
+        $data = Genre::orderBy('genre_name', 'asc')->get();
+        return view('genre.list', ['genrelist' => $data]);
     }
 
     /**
@@ -31,7 +31,7 @@ class GenreController extends Controller
      */
     public function creategenre()
     {
-        return view( 'genre.form');
+        return view('genre.form');
     }
 
     /**
@@ -39,7 +39,6 @@ class GenreController extends Controller
      */
     public function genrestore(Request $request)
     {
-        //dd($request);
         $request->validate([
             'genre_name' => ['required'],
         ]);
@@ -50,20 +49,12 @@ class GenreController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Genre $genre)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function editgenre($id)
     {
         $genre = Genre::find($id);
-        return view('genre.form',['genre'=>$genre]);
+        return view('genre.form', ['genre' => $genre]);
     }
 
     /**
@@ -71,7 +62,6 @@ class GenreController extends Controller
      */
     public function updategenre(Request $request)
     {
-        //dd($request);
         $request->validate([
             'genre_name' => ['required']
         ]);

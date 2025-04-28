@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Question;
-use App\Models\Auth;
 use App\Models\Assignment;
 use App\Models\AssignmentQuestions;
 
@@ -29,7 +28,6 @@ class AssignmentQuestionsController extends Controller
     public function viewassignmentquestions($id)
     {
         $assignmentquestions = AssignmentQuestions::where('assignment_id', $id)->with('question')->with('assignment')->with('assignment.student')->get();
-        // dd($assignmentquestions);
         return view('assignmentquestions.form', ['assignmentquestionslist' => $assignmentquestions]);
     }
 
@@ -37,8 +35,6 @@ class AssignmentQuestionsController extends Controller
     {
         $questions = $request->input('questions'); // Retrieve all questions
         $book_id = $request->input('book_id'); // Retrieve all questions
-
-        //dd($questions);
 
         foreach ($questions as $question) {
 
@@ -50,7 +46,6 @@ class AssignmentQuestionsController extends Controller
                 // Find the assignment question by ID
                 $assignmentQuestion = AssignmentQuestions::find($question['id']);
                 if ($assignmentQuestion) {
-                    //dd($assignmentQuestion);
                     // Save the answer
                     $assignmentQuestion->answer_field = $question['answer_field'];
                     $assignmentQuestion->save();
@@ -62,13 +57,13 @@ class AssignmentQuestionsController extends Controller
             $assignment = Assignment::find($assignmentId);
             $assignment->book_id = $book_id;
 
-    
+
             if ($assignment) {
                 if ($assignment->status == 'Not Completed') {
                     // First submission: change to Pending Feedback
                     $assignment->status = 'Pending Feedback';
                 }
-    
+
                 // If feedback is provided and status is Pending Feedback, mark as Completed
                 if ($assignment->status == 'Pending Feedback' && $request->filled('feedback')) {
                     $assignment->vocabulary = $request->vocabulary;
@@ -80,7 +75,7 @@ class AssignmentQuestionsController extends Controller
                     $assignment->feedback = $request->feedback;
                     $assignment->status = 'Completed';
                 }
-    
+
                 $assignment->save();
             }
         }

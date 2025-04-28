@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\FormClass;
 use App\Models\User;
 use App\Models\Book;
@@ -11,7 +10,6 @@ use App\Models\Review;
 use Illuminate\Support\Facades\DB;
 use App\Models\Question;
 use App\Models\Assignment;
-use App\Models\AssignmentQuestions;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -35,21 +33,7 @@ class DashboardController extends Controller
         $totalQuestions = Question::count();
         $totalClasses = FormClass::count();
         $totalGenres = DB::table('books')->distinct('category')->count('category');
-
-
-
-        // 1 get total number of students
-        // get total number of teachers
-
-        // get total number of books
-        // get total number of reviews
-        // get total number of assignments
-        // get total number of questions
-        // get total number of classes
-        // get total number of genres
-        // get total number of reviews
-
-        // dd($data);
+        
         return view('dashboard', ['assignmentslist' => $data, 'studentCount' => $studentCount, 'teacherCount' => $teacherCount, 'totalBooks' => $totalBooks, 'totalReviews' => $totalReviews, 'totalAssignments' => $totalAssignments, 'totalQuestions' => $totalQuestions, 'totalClasses' => $totalClasses, 'totalGenres' => $totalGenres]);
     }
 
@@ -129,14 +113,14 @@ class DashboardController extends Controller
 
     public function getBookCategoryData()
     {
-       
-        $books  = Genre::withCount('book')->get();
+
+        $books = Genre::withCount('book')->get();
         $chartData = [];
 
         foreach ($books as $book) {
             $chartData[] = [
                 'name' => $book->genre_name,
-                'y' =>  $book->book_count,
+                'y' => $book->book_count,
             ];
         }
 

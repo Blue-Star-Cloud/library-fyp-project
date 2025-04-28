@@ -24,36 +24,28 @@ class BookController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $data = Book::withCount('review') // Get total reviews per book
-        ->withAvg('review', 'rating') // Get average rating per book
-        ->get();
-        return view( 'books.list',['bookslist'=>$data]);
+            ->withAvg('review', 'rating') // Get average rating per book
+            ->orderBy('title', 'asc')
+            ->get();
+        return view('books.list', ['bookslist' => $data]);
     }
 
     public function assignedBook()
     {
-        $data = Book::with('review')->where('id', Auth::user()->book_id)->get();
+        $data = Book::with('review')->where('id', Auth::user()->book_id)->orderBy('title', 'asc')->get();
         $totalReviews = Review::where('book_id', Auth::user()->book_id)->count();
         $avgRating = Review::where('book_id', Auth::user()->book_id)->avg('rating');
         $canReview = !Review::where('book_id', Auth::user()->book_id)
-        ->where('student_id', Auth::id())
-        ->exists();
-
-
-
-        // dd($data);
-        return view( 'books.studentAssignedBook',['book'=>$data, 'totalReviews'=>$totalReviews, 'avgRating'=>$avgRating, 'canReview'=>$canReview]);
-    }
-    public function tindex()
-    {
-        $data = Book::all();
-        return view( 'books.workinglist');
+            ->where('student_id', Auth::id())
+            ->exists();
+        return view('books.studentAssignedBook', ['book' => $data, 'totalReviews' => $totalReviews, 'avgRating' => $avgRating, 'canReview' => $canReview]);
     }
 
     /**
@@ -61,15 +53,15 @@ class BookController extends Controller
      */
     public function createbook()
     {
-        $allgenres = Genre::all();
-        return view( 'books.form',['genrelist'=>$allgenres]);
+        $allgenres = Genre::orderBy('genre_name', 'asc')->get();
+        return view('books.form', ['genrelist' => $allgenres]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function bookstore(Request $request)
-    {   
+    {
         $request->validate([
             'publisher' => ['required'],
             'author' => ['required'],
@@ -88,7 +80,7 @@ class BookController extends Controller
         $book->description = $request->description;
         $book->content = $request->content;
         $book->or_level = $request->or_level;
-        if ($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $imagename = $request->file('image');
             $filename = time() . '.' . $imagename->getClientOriginalExtension();
             $path = $request->file('image')->move(public_path('/assets/book-images/'), $filename);
@@ -100,21 +92,13 @@ class BookController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show( $book)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
-    public function editbook( $id)
+    public function editbook($id)
     {
-        $allgenres = Genre::all();
+        $allgenres = Genre::orderBy('genre_name', 'asc')->get();
         $book = Book::find($id);
-        return view('books.form',['book'=>$book,'genrelist'=>$allgenres]);
+        return view('books.form', ['book' => $book, 'genrelist' => $allgenres]);
     }
 
     /**
@@ -134,7 +118,7 @@ class BookController extends Controller
             $filename = time() . '.' . $imagename->getClientOriginalExtension();
             $path = $imagename->move(public_path('/assets/book-images/'), $filename);
             $book->image = $filename;
-            $book->save(); 
+            $book->save();
         }
         $book->genres()->sync($request->genre);
         return redirect()->route('books');
@@ -154,5 +138,5 @@ class BookController extends Controller
 
 
 
-   
+
 }

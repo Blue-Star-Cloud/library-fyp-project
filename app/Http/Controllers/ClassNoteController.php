@@ -9,36 +9,37 @@ use Illuminate\Http\Request;
 
 class ClassNoteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function classnotesindex($user_id)
     {
         $user = User::find($user_id);
-            if ($user->role == 'teacher') {
-                $class = FormClass::where('teacher_id', $user->id)->first();}
-            elseif ($user->role == 'student') {
-                $class = FormClass::where('id', $user->assigned_class)->first();}
-            elseif ($user->role == 'admin') {
-                $data = ClassNote::all();
-                return view( 'class_notes.list',['classnoteslist'=>$data]);
-            }
-        $data = ClassNote::where('form_class_id',$class->id)->get();
-        return view( 'class_notes.list',['classnoteslist'=>$data]);
-        
+        if ($user->role == 'teacher') {
+            $class = FormClass::where('teacher_id', $user->id)->first();
+        } elseif ($user->role == 'student') {
+            $class = FormClass::where('id', $user->assigned_class)->first();
+        } elseif ($user->role == 'admin') {
+            $data = ClassNote::with('formclass')->orderBy('id', 'desc')->get();
+            return view('class_notes.list', ['classnoteslist' => $data]);
+        }
+        $data = ClassNote::where('form_class_id', $class->id)->orderBy('id', 'desc')->get();
+        return view('class_notes.list', ['classnoteslist' => $data]);
+
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function classnotecreate($user_id)
-    {   
+    {
         $teacher_user = User::find($user_id);
-        $class = FormClass::where('teacher_id', $teacher_user->id)->first();
-        return view( 'class_notes.form',['teacher_user'=>$teacher_user,'class'=>$class]);
+        $class = FormClass::where('teacher_id', $teacher_user->id)->orderBy('class_name', 'asc')->first();
+        return view('class_notes.form', ['teacher_user' => $teacher_user, 'class' => $class]);
     }
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -59,7 +60,7 @@ class ClassNoteController extends Controller
         $classnote->teacher_id = $request->teacher_id;
         $classnote->form_class_id = $request->form_class_id;
         $classnote->save();
-        return redirect()->route('classnotesindex',['user_id'=>$request->teacher_id]);
+        return redirect()->route('classnotesindex', ['user_id' => $request->teacher_id]);
     }
 
     /**
@@ -68,13 +69,13 @@ class ClassNoteController extends Controller
     public function classnoteedit($id)
     {
         $note = ClassNote::find($id);
-        return view('class_notes.form',['note'=>$note]);
+        return view('class_notes.form', ['note' => $note]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function classnoteupdate(Request $request, ClassNote $classNote)
+    public function classnoteupdate(Request $request)
     {
         $request->validate([
             'content' => ['nullable']
@@ -82,15 +83,15 @@ class ClassNoteController extends Controller
         $id = $request->id;
         $note = ClassNote::find(id: $id);
         $note->update($request->only('title', 'content'));
-        return redirect()->route('classnotesindex',['user_id'=>$request->teacher_id]);
+        return redirect()->route('classnotesindex', ['user_id' => $request->teacher_id]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function classnotedelete($id,$user_id)
+    public function classnotedelete($id, $user_id)
     {
         ClassNote::destroy($id);
-        return redirect()->route('classnotesindex',['user_id'=>$user_id]);
+        return redirect()->route('classnotesindex', ['user_id' => $user_id]);
     }
 }

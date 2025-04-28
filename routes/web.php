@@ -76,8 +76,6 @@ Route::controller(ClassNoteController::class)->group(function () {
 Route::controller(BookController::class)->group(function () {
     Route::get('/bookslist', 'index',)->name('books');
     Route::get('/assignedBook', 'assignedBook',)->name('assignedBook');
-    Route::get('/tempbookslist', 'tindex',)->name('tbooks');
-    //Route::get('/viewstudentnotes/{id}','viewstudentnotes',)->name('viewstudentnotes');
     Route::get('/createbook', 'createbook')->name('createbook');
     Route::post('/bookstore', 'bookstore')->name('bookstore');
     Route::get('/deletebook/{id}', 'deletebook')->name('deletebook');

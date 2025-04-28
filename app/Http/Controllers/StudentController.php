@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
 use App\Models\FormClass;
 use App\Models\User;
 use App\Models\Book;
@@ -12,9 +11,7 @@ use App\Models\Assignment;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-// use App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
 
 class StudentController extends Controller
 {
@@ -27,50 +24,38 @@ class StudentController extends Controller
      */
     public function index()
     {
-        // dd("here");
-        // $data = User::where('role', 'student')->get();
-        // $classes = FormClass::where('teacher_id', 62)
-        // ->with('students')
-        // ->get();
-
-        // dd($classes);
-        
-        //$data = User::where('role', operator: 'student')->with('class')->get();
-        $data = User::where('role', 'student')->with('class','book')->get();
+        $data = User::where('role', 'student')->with('class', 'book')->orderBy('name', 'asc')->get();
         $classes = FormClass::all();
 
-        // dd($data[0]->class->class_name);
         return view('students.list', ['userslist' => $data, 'classes' => $classes]);
     }
 
     public function formclassindex($teacher_id)
     {
         $class = FormClass::where('teacher_id', $teacher_id)->first();
-        if ($class == null){
+        if ($class == null) {
             return redirect()->back();
         }
 
         $data = User::where('role', 'student')
             ->where('assigned_class', $class->id)
             ->with('class', 'book')
+            ->orderBy('name', 'asc')
             ->get();
-        // if (!$data->hasClass()) {
-        //     return redirect()->back()->withErrors(['msg' => 'You do not have an assigned class']);
-        // }
-        // else
+
         $classes = FormClass::where('teacher_id', $teacher_id)->with('students')->get();
-        
+
         return view('students.formclassstudents', ['userslist' => $data, 'classes' => $classes]);
-        
+
     }
 
     public function profile($id)
     {
         $user = User::find($id);
+        
         // get count of reviews
         $reviewsCount = Review::where('student_id', $id)->count();
         // get average rating
-        // $averageRating = Review::where('student_id',$id)->avg('rating');
         $columns = ['vocabulary', 'inference', 'prediction', 'explanation', 'retrieval', 'summarise'];
 
         // Fetch last 4 assignments for the student, but only needed columns
@@ -85,16 +70,15 @@ class StudentController extends Controller
         foreach ($columns as $column) {
             $averages[$column] = $assignments->avg($column);
         }
-        
 
-        return view('students.profile', ['user' => $user, 'reviewsCount' => $reviewsCount, 'averages'=> $averages]);
+        return view('students.profile', ['user' => $user, 'reviewsCount' => $reviewsCount, 'averages' => $averages]);
     }
 
     public function teacherindex()
     {
-        $data = User::all();
+        $data = User::orderBy('name', 'asc')->get();
         $formclassdata = FormClass::all();
-        return view('teachers.list', ['userslist' => $data,'classlist'=>$formclassdata]);
+        return view('teachers.list', ['userslist' => $data, 'classlist' => $formclassdata]);
     }
 
     /**
@@ -102,15 +86,14 @@ class StudentController extends Controller
      */
     public function studentCreate()
     {
-        $allgenres = Genre::all();
-        $allclasses = FormClass::all();
+        $allgenres = Genre::orderBy('genre_name', 'asc')->get();
+        $allclasses = FormClass::orderBy('class_name', 'asc')->get();
         return view('students.form', ['genrelist' => $allgenres, 'classes' => $allclasses]);
     }
 
     public function teacherCreate()
     {
-        $allgenres = Genre::all();
-        return view('teachers.form', ['genrelist' => $allgenres]);
+        return view('teachers.form');
     }
 
     /**
@@ -118,11 +101,11 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'name' => ['required'],
             'email' => ['required'],
-            'password' => ['required','string','min:8','regex:/^(?=.*[A-Z])(?=.*[\W_]).+$/'],
+            'password' => ['required', 'string', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*[\W_]).+$/'],
             'date_of_birth' => ['required'],
             'or_level' => ['required'],
             'assigned_class' => ['required']
@@ -139,12 +122,12 @@ class StudentController extends Controller
         $user->assigned_class = $request->assigned_class;
         $user->save();
         $user->genre()->attach($request->genre);
-        if (Auth::user()->role == 'teacher'){
-            return redirect()->route('formclassstudents',['teacher_id'=>$user->class->teacher_id]);}
-        elseif (Auth::user()->role == 'admin'){
+        if (Auth::user()->role == 'teacher') {
+            return redirect()->route('formclassstudents', ['teacher_id' => Auth::user()->id]);
+        } elseif (Auth::user()->role == 'admin') {
             return redirect()->route('users');
         }
-        
+
     }
 
     public function teacherstore(Request $request)
@@ -152,7 +135,7 @@ class StudentController extends Controller
         $request->validate([
             'name' => ['required'],
             'email' => ['required'],
-            'password' => ['required','string','min:8','regex:/^(?=.*[A-Z])(?=.*[\W_]).+$/'],
+            'password' => ['required', 'string', 'min:8', 'regex:/^(?=.*[A-Z])(?=.*[\W_]).+$/'],
             'date_of_birth' => ['required'],
         ]);
         $user = new User();
@@ -167,18 +150,10 @@ class StudentController extends Controller
         return redirect()->route('teacherusers');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Student $student)
-    {
-        //
-    }
-
     public function delete($id)
     {
         $formclass = FormClass::where('teacher_id', $id)
-        ->update(['teacher_id' => NULL]);
+            ->update(['teacher_id' => NULL]);
         User::destroy($id);
         return redirect()->back();
     }
@@ -188,17 +163,16 @@ class StudentController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
-        $allgenres = Genre::all();
-        $allclasses = FormClass::all();
-        return view('students.form', ['user' => $user, 'genrelist' => $allgenres,'classes' => $allclasses]);
+        $allgenres = Genre::orderBy('genre_name', 'asc')->get();
+        $allclasses = FormClass::orderBy('class_name', 'asc')->get();
+        return view('students.form', ['user' => $user, 'genrelist' => $allgenres, 'classes' => $allclasses]);
     }
 
     public function tedit($id)
     {
         $user = User::find($id);
-        $allgenres = Genre::all();
-        $allclasses = FormClass::all();
-        return view('teachers.form', ['user' => $user, 'genrelist' => $allgenres,'classes' => $allclasses]);
+        $allclasses = FormClass::orderBy('class_name', 'asc')->get();
+        return view('teachers.form', ['user' => $user, 'classes' => $allclasses]);
     }
 
     /**
@@ -215,8 +189,10 @@ class StudentController extends Controller
         $user->genre()->sync($request->genre);
         if ($user->role === 'teacher') {
             return redirect()->route('teacherusers');
-        } elseif ($user->role === 'student') {
+        } elseif ($user->role === 'student' && Auth::user()->role == 'admin') {
             return redirect()->route('users');
+        }elseif ($user->role === 'student' && Auth::user()->role == 'teacher') {
+            return redirect()->route('formclassstudents', ['teacher_id' => Auth::user()->id]);
         }
     }
 
@@ -272,7 +248,7 @@ class StudentController extends Controller
         if (!$assignedBookId) {
             $assignedBookId = null; // or return 'N/A';
             $book_name = 'N/A';
-        }else{
+        } else {
             $book_name = Book::find($assignedBookId)->title;
         }
 
@@ -280,8 +256,6 @@ class StudentController extends Controller
 
         return redirect()->back();
     }
-
-
 
     public function updatePassword(Request $request)
     {
@@ -303,15 +277,5 @@ class StudentController extends Controller
         ]);
 
         return back()->with('success', 'Password updated successfully.');
-    }
-
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Student $student)
-    {
-        //
     }
 }
